@@ -1,0 +1,64 @@
+pip install googletrans==4.0.0-rc1
+
+from googletrans import Translator
+
+def generate_links(topic, feature, base_url):
+  links=[]
+  for feature in features:
+    prompt=f"{topic} - {feature} discover the feature. For more information: {base_url}/{feature.replace(' ', '-').lower()}"
+    links.append(prompt)
+  return links
+
+
+def create_brochure(vision, mission, features, customer_reviews, call_to_action):
+    brochure=f"""
+    **Peerbie Broşürü**
+    
+    Giriş:
+    {vision} - {mission}
+    
+    Özellikler:
+    {', '.join(features)}
+    
+    Müşteri Görüşleri:
+    {customer_reviews}
+    
+    Eylem Çağrısı:
+    {call_to_action}
+    """
+    return brochure
+
+def translate_to_italian(text):
+  translator=Translator()
+  translated_text=translator.translate(text, src="en", dest="it")
+  return translated_text
+
+brochure_text="""
+**Peerbie Broşürü**
+
+Entrance:
+Peerbie vision: Productivity - Mission: Empowering Businesses
+
+Features: 
+Task Management, Collaboration, Time Management, Tracking Progress
+
+Customer Reviews:
+- "It helped us a lot!" -James
+- "Perfect guide!" - Alice
+
+Call to Action:
+Join us: https://peerbie.com/join
+
+"""
+links= generate_links(topic, features, base_url)
+print("linkler:")
+print("\n".join(links))
+
+brochure= create_brochure(vision, mission, features, customer_reviews, call_to_action)
+print("\nBrochure:")
+print(brochure)
+
+
+italian_translation=translate_to_italian(brochure_text)
+print("\nitalian:")
+print(italian_translation)
