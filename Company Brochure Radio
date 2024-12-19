@@ -1,0 +1,35 @@
+import gradio as gr
+import requests
+from bs4 import BeautifulSoup
+
+def scrape_company_info(url):
+  response= requests.get(url)
+  soup= BeautifulSoup(response.text, "html.parser")
+
+  company_name= soup.find("h1").text
+  company_description=soup.find("meta", {"name": "description"})['content']
+
+  services=[]
+  service_section=soup.find_all("div", class_="service")
+  for service in service_section:
+    services.append(service.text.strip())
+
+  brochure_content= f"""
+  Company name: {company_name}
+  Description: {company_description}
+  Services offered: 
+  """
+
+  for idx, service in enumerate(services, 1):
+    brochure_content+= f"{idx}. {service}\n"
+  return brochure_content
+
+def generate_brochure(url):
+  brochure=scrape_company_info(url)
+  return brochure
+
+iface=gr.Interface(fn=generate_brochure,
+                   inputs=gr.Textbox(label="Enter a company URL"),
+                   outputs=gr.Textbox(label="Company Brochure"))
+
+iface.launch()
